@@ -81,13 +81,13 @@ function drawPolaroidBackCanvas(caption, paperColor = '#ebe5dc', inkColor = '#3a
     ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
   }
 
-  // Centered cursive handwritten message on the back
+  // Centered cursive handwritten message on the back (+20% larger for crisp readability)
   ctx.fillStyle = inkColor;
-  ctx.font = '600 44px "Dancing Script", cursive';
+  ctx.font = '600 53px "Dancing Script", cursive';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const maxW = w - 120;
+  const maxW = w - 92;
   const words = (caption || 'Kỉ niệm đáng nhớ...').trim().split(/\s+/);
   const lines = [];
   let line = '';
@@ -102,7 +102,7 @@ function drawPolaroidBackCanvas(caption, paperColor = '#ebe5dc', inkColor = '#3a
   }
   if (line) lines.push(line);
 
-  const lh = 58;
+  const lh = 68;
   const startY = h * 0.48 - ((lines.length - 1) * lh) / 2;
   lines.forEach((l, idx) => {
     ctx.fillText(l, w / 2, startY + idx * lh);

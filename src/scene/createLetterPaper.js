@@ -199,18 +199,18 @@ export function createLetterPaper(letter, theme, paperBump) {
 
   function computeTextLayout() {
     layoutLines = [];
-    const marginX = 96;
+    const marginX = 82;
     const maxWidth = canvasW - marginX * 2;
 
     // 1. Date (top-right)
-    const dateFont = '600 32px "Dancing Script", cursive';
+    const dateFont = '600 33px "Dancing Script", cursive';
     ctx.font = dateFont;
     const dateText = currentLetter.date || '';
     const dateW = ctx.measureText(dateText).width;
     layoutLines.push({
       text: dateText,
       x: canvasW - marginX - dateW,
-      y: 112,
+      y: 104,
       width: dateW,
       font: dateFont,
       height: 44,
@@ -218,32 +218,32 @@ export function createLetterPaper(letter, theme, paperBump) {
     });
 
     // 2. Salutation
-    const salFont = '700 48px "Dancing Script", cursive';
+    const salFont = '700 50px "Dancing Script", cursive';
     ctx.font = salFont;
     const salText = currentLetter.salutation || '';
     const salW = ctx.measureText(salText).width;
     layoutLines.push({
       text: salText,
       x: marginX,
-      y: 214,
+      y: 196,
       width: salW,
       font: salFont,
       height: 58,
       weight: Math.max(14, salText.length * 1.35),
     });
 
-    // 3. Wrapped body paragraphs (auto-fit font size so multi-paragraph letters fit cleanly above signature!)
+    // 3. Wrapped body paragraphs (+10% larger auto-fit body font while fitting cleanly above signature!)
     const rawBody = (currentLetter.body || '').trim();
     const paragraphs = rawBody.split(/\n+/);
-    let bodyFontSize = 40;
-    let lineHeight = 58;
+    let bodyFontSize = 44;
+    let lineHeight = Math.round(bodyFontSize * 1.38);
     let wrapped = [];
 
-    for (let attempt = 0; attempt < 8; attempt++) {
+    for (let attempt = 0; attempt < 9; attempt++) {
       const fontStr = `600 ${bodyFontSize}px "Dancing Script", cursive`;
       ctx.font = fontStr;
       wrapped = [];
-      let cursorY = 278;
+      let cursorY = 258;
 
       paragraphs.forEach((para, pIdx) => {
         const words = para.trim().split(/\s+/);
@@ -279,24 +279,24 @@ export function createLetterPaper(letter, theme, paperBump) {
           cursorY += lineHeight;
         }
         if (pIdx < paragraphs.length - 1) {
-          cursorY += Math.round(lineHeight * 0.28);
+          cursorY += Math.round(lineHeight * 0.24);
         }
       });
 
-      if (cursorY <= 1130) break;
-      bodyFontSize -= 2.5;
-      lineHeight = Math.round(bodyFontSize * 1.44);
+      if (cursorY <= 1185) break;
+      bodyFontSize -= 2;
+      lineHeight = Math.round(bodyFontSize * 1.38);
     }
 
     layoutLines.push(...wrapped);
 
     // 4. Sign-off (bottom-right, above heart sticker)
-    const signFont = '700 50px "Dancing Script", cursive';
+    const signFont = '700 52px "Dancing Script", cursive';
     ctx.font = signFont;
     const signText = currentLetter.sender || '';
     const signW = ctx.measureText(signText).width;
     const lastLineY = wrapped.length ? wrapped[wrapped.length - 1].y : 420;
-    const signY = Math.min(1215, Math.max(lastLineY + 76, 1020));
+    const signY = Math.min(1250, Math.max(lastLineY + 62, 1040));
     const signX = canvasW - marginX - Math.max(signW, 180) + (Math.max(signW, 180) - signW) / 2;
 
     // Brief natural glide/pause as the pen moves down to sign at the bottom
@@ -325,7 +325,7 @@ export function createLetterPaper(letter, theme, paperBump) {
 
     // Position 3D heart sticker right beneath sign-off
     const heartCanvasX = signX + signW / 2;
-    const heartCanvasY = Math.min(1320, signY + 106);
+    const heartCanvasY = Math.min(1355, signY + 94);
     heartSticker.position.set(
       (heartCanvasX / canvasW - 0.5) * PAPER_W,
       (0.5 - heartCanvasY / canvasH) * PAPER_H,
