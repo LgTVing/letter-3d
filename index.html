@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#f7f0ed" />
+    <title>Thư tay 3D tương tác</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;1,500;1,600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body data-theme="love">
+    <div id="scene-surface" class="scene-surface">
+      <div id="canvas-mount" class="canvas-mount"></div>
+
+      <!-- Loading veil -->
+      <div id="loading-veil" class="loading-veil">
+        <div class="loading-seal" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M12 21s-6.8-4.35-9.2-8.2C.9 9.7 2.4 5.5 6.3 4.8c2.2-.4 4.3.6 5.7 2.3 1.4-1.7 3.5-2.7 5.7-2.3 3.9.7 5.4 4.9 3.5 8-2.4 3.85-9.2 8.2-9.2 8.2z" />
+          </svg>
+        </div>
+        <p id="loading-text">Đang chuẩn bị lá thư...</p>
+      </div>
+
+      <!-- Top Left: Sealed Info Card -->
+      <header class="top-left">
+        <aside id="letter-info-card" class="info-card">
+          <div class="info-card-header">
+            <h1 id="card-title" class="info-card-title">Thư gửi Người thương</h1>
+            <button id="btn-quick-edit" class="icon-ghost-btn" title="Chỉnh sửa nội dung thư" aria-label="Chỉnh sửa nội dung thư">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+            </button>
+          </div>
+          <p id="card-from" class="info-card-from">từ Thương anh</p>
+          <p id="card-date" class="info-card-date">ngày 19 tháng 11, 2026</p>
+        </aside>
+      </header>
+
+      <!-- Top Right Controls: Sealed Mode -->
+      <div id="controls-sealed" class="top-right">
+        <button id="btn-see-all" class="pill-btn pill-white" type="button">Xem toàn bộ</button>
+        <button id="btn-volume-sealed" class="circle-btn" type="button" aria-label="Âm lượng" title="Bật/tắt âm thanh">
+          <svg class="icon-sound-on" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+          <svg class="icon-sound-off hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+        <div class="lang-toggle" role="group" aria-label="Ngôn ngữ">
+          <button class="lang-btn active" data-lang="vi" type="button">VI</button>
+          <button class="lang-btn" data-lang="en" type="button">EN</button>
+        </div>
+      </div>
+
+      <!-- Top Right Controls: Opened Mode -->
+      <div id="controls-opened" class="top-right hidden">
+        <div class="menu-anchor">
+          <button id="btn-more-menu" class="circle-btn" type="button" aria-label="Thêm" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <circle cx="6" cy="12" r="1.6" />
+              <circle cx="12" cy="12" r="1.6" />
+              <circle cx="18" cy="12" r="1.6" />
+            </svg>
+          </button>
+
+          <div id="more-dropdown" class="dropdown-menu hidden" role="menu">
+            <button id="menu-put-away" class="dropdown-item" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              <span data-i18n="putAway">Cất thư</span>
+            </button>
+
+            <div class="dropdown-volume">
+              <button id="menu-mute-toggle" class="icon-ghost-btn" type="button" aria-label="Tắt tiếng">
+                <svg class="icon-sound-on" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                </svg>
+                <svg class="icon-sound-off hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <line x1="23" y1="9" x2="17" y2="15" />
+                  <line x1="17" y1="9" x2="23" y2="15" />
+                </svg>
+              </button>
+              <input id="volume-slider" type="range" min="0" max="100" value="80" aria-label="Âm lượng" />
+              <span id="volume-value" class="volume-label">80%</span>
+            </div>
+
+            <button id="menu-replay" class="dropdown-item" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span data-i18n="replay">Xem lại hiệu ứng viết</span>
+            </button>
+
+            <button id="menu-customize" class="dropdown-item" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              <span data-i18n="createOwn">Viết thư của bạn</span>
+            </button>
+
+            <button id="menu-share" class="dropdown-item" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              <span data-i18n="shareLink">Sao chép link thư</span>
+            </button>
+
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown-lang-row">
+              <div class="lang-toggle" role="group" aria-label="Ngôn ngữ">
+                <button class="lang-btn active" data-lang="vi" type="button">VI</button>
+                <button class="lang-btn" data-lang="en" type="button">EN</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-reply-open" class="pill-btn pill-dark" type="button" data-i18n="reply">Viết hồi âm</button>
+      </div>
+
+      <!-- Bottom Left CTA (Opened Mode) -->
+      <div id="bottom-left-cta" class="bottom-left hidden">
+        <button id="btn-write-own" class="pill-btn pill-white pill-with-icon" type="button">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          <span data-i18n="createOwn">Viết thư của bạn</span>
+        </button>
+      </div>
+
+      <!-- Bottom Center Hint -->
+      <div id="hint-bar" class="hint-bar">
+        <span class="hint-dot" aria-hidden="true"></span>
+        <span id="hint-text">Nhấn giữ để mở · kéo để xoay</span>
+      </div>
+
+      <!-- Bottom Right Zoom Pill (Opened Mode) -->
+      <div id="zoom-controls" class="zoom-pill hidden" role="group" aria-label="Thu phóng">
+        <button id="btn-zoom-in" class="zoom-btn" type="button" title="Phóng to" aria-label="Phóng to">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+        <button id="btn-zoom-reset" class="zoom-btn" type="button" title="Vừa khung" aria-label="Vừa khung">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+          </svg>
+        </button>
+        <button id="btn-zoom-out" class="zoom-btn" type="button" title="Thu nhỏ" aria-label="Thu nhỏ">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Hold Progress Subtle Indicator -->
+      <div id="hold-indicator" class="hold-indicator hidden" aria-hidden="true">
+        <div id="hold-progress-fill" class="hold-progress-fill"></div>
+      </div>
+
+      <!-- Toast -->
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+      <!-- Customize / Create Letter Modal -->
+      <div id="editor-backdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="editor-modal-title">
+        <div class="editor-modal">
+          <div class="editor-header">
+            <h2 id="editor-modal-title">Tạo & tùy chỉnh lá thư của bạn</h2>
+            <button id="btn-close-editor" class="icon-ghost-btn" type="button" aria-label="Đóng">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <form id="editor-form" class="editor-body">
+            <div class="form-row">
+              <label class="field">
+                <span>Người nhận (trên phong bì)</span>
+                <input id="input-recipient" type="text" maxlength="40" required />
+              </label>
+              <label class="field">
+                <span>Người gửi / Ký tên</span>
+                <input id="input-sender" type="text" maxlength="40" required />
+              </label>
+            </div>
+
+            <div class="form-row">
+              <label class="field">
+                <span>Ngày viết thư</span>
+                <input id="input-date" type="text" maxlength="40" required />
+              </label>
+              <label class="field">
+                <span>Lời chào đầu thư</span>
+                <input id="input-salutation" type="text" maxlength="50" required />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Nội dung lá thư</span>
+              <textarea id="input-body" rows="6" required></textarea>
+            </label>
+
+            <div class="field">
+              <span>Chủ đề màu sắc</span>
+              <div id="theme-picker" class="theme-picker">
+                <button type="button" class="theme-chip active" data-theme-id="love">
+                  <span class="swatch" style="background:#d9b5b2"></span>Hồng phấn
+                </button>
+                <button type="button" class="theme-chip" data-theme-id="cream">
+                  <span class="swatch" style="background:#dfd2be"></span>Kem cổ điển
+                </button>
+                <button type="button" class="theme-chip" data-theme-id="sage">
+                  <span class="swatch" style="background:#bac7b8"></span>Xanh lá dịu
+                </button>
+                <button type="button" class="theme-chip" data-theme-id="lavender">
+                  <span class="swatch" style="background:#cbc0d6"></span>Oải hương
+                </button>
+              </div>
+            </div>
+
+            <div class="polaroid-editor-section">
+              <h3>Ảnh Polaroid & lời nhắn mặt sau</h3>
+              <div class="polaroid-editor-grid">
+                <div class="polaroid-slot">
+                  <div class="polaroid-preview-wrap">
+                    <img id="preview-photo-0" alt="Ảnh Polaroid 1" />
+                    <label class="upload-pill">
+                      Đổi ảnh 1
+                      <input id="input-photo-0" type="file" accept="image/*" hidden />
+                    </label>
+                  </div>
+                  <input id="input-caption-0" type="text" maxlength="90" placeholder="Lời nhắn mặt sau ảnh 1..." />
+                </div>
+
+                <div class="polaroid-slot">
+                  <div class="polaroid-preview-wrap">
+                    <img id="preview-photo-1" alt="Ảnh Polaroid 2" />
+                    <label class="upload-pill">
+                      Đổi ảnh 2
+                      <input id="input-photo-1" type="file" accept="image/*" hidden />
+                    </label>
+                  </div>
+                  <input id="input-caption-1" type="text" maxlength="90" placeholder="Lời nhắn mặt sau ảnh 2..." />
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-footer">
+              <button id="btn-copy-share" class="pill-btn pill-white" type="button">Sao chép link chia sẻ</button>
+              <button class="pill-btn pill-dark" type="submit">Áp dụng & đóng phong bì</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
